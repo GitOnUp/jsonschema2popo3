@@ -4,4 +4,4 @@ include *.md
 # Include the license file
 include LICENSE.txt
 
-include jsonschema2popo/_class.tmpl
+include jsonschema2popo3/_class.jinja
