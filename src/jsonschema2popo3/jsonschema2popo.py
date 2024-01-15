@@ -3,7 +3,10 @@
 import argparse
 import json
 import os
+from pathlib import Path
 
+import black
+import isort
 import networkx
 from jinja2 import Environment, FileSystemLoader
 
@@ -161,7 +164,8 @@ class JsonSchema2Popo:
         self.jinja.get_template(self.CLASS_TEMPLATE_FNAME).stream(
             models=self.definitions
         ).dump(filename)
-
+        black.format_file_in_place(Path(filename))
+        isort.file(filename)
 
 class readable_dir(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
