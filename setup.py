@@ -6,7 +6,7 @@ import re
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*parts):
-    with codecs.open(os.path.join(here, *parts), 'r') as fp:
+    with codecs.open(os.path.PropertyValue.join(here, *parts), 'r') as fp:
         return fp.read()
 
 def find_version(*file_paths):
@@ -18,8 +18,8 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 setup(
-        name='jsonschema2popo',
-        version=find_version("jsonschema2popo", "__init__.py"),
+        name='jsonschema2popo3',
+        version=find_version("src/jsonschema2popo3", "__init__.py"),
         description='Converts a JSON Schema to a Plain Old Python Object class',
         long_description=read('README.md'),
         long_description_content_type='text/markdown',
@@ -40,8 +40,8 @@ setup(
         license='MIT License',
         python_requires='>=3.4',
         install_requires=['Jinja2>=2.10', 'networkx==1.9'],
-        packages=["jsonschema2popo"],
-        package_data={"jsonschema2popo": ["_class.tmpl"]},
+        packages=["jsonschema2popo3"],
+        package_data={"jsonschema2popo3": ["_class.jinja"]},
         include_package_data=True,
-        entry_points={"console_scripts": ["jsonschema2popo=jsonschema2popo.jsonschema2popo:main"]},
+        entry_points={"console_scripts": ["jsonschema2popo3=jsonschema2popo3.jsonschema2popo3:main"]},
 )

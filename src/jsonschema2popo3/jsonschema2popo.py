@@ -11,7 +11,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 class JsonSchema2Popo:
     """Converts a JSON Schema to a Plain Old Python Object class"""
 
-    CLASS_TEMPLATE_FNAME = '_class.tmpl'
+    CLASS_TEMPLATE_FNAME = '_class.jinja'
 
     J2P_TYPES = {
         'string': str,
