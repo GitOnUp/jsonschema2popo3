@@ -24,9 +24,13 @@ class {{model.name}}:
             , {{prop._name}}={{prop._default}}
 {% endfor %}
             ):
+{% if model.properties %}
 {% for prop in model.properties %}
         self.__{{prop._name}} = {{prop._name}}
 {% endfor %}
+{% else %}
+        pass
+{% endif %}
     
 {% for prop in model.properties %}
     def _get_{{prop._name}}(self):
