@@ -3,8 +3,6 @@
 dist/
 build/
 venv/
-
-model.py
-*.json
+test/tmp_output/
 
 .idea/
