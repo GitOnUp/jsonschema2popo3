@@ -1,11 +1,7 @@
 import json
 import os
-from pathlib import Path
 
-import black
-import isort
 import networkx
-from black import Mode
 from jinja2 import Environment, FileSystemLoader
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -162,6 +158,3 @@ class Generator:
         self.jinja.get_template(self.CLASS_TEMPLATE_FNAME).stream(
             models=self.definitions
         ).dump(filename)
-        black.format_file_in_place(Path(filename), fast=False, mode=black.FileMode())
-        isort.file(filename)
-
