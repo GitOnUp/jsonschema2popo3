@@ -9,7 +9,7 @@ if __package__ == "":
     path = os.path.dirname(os.path.dirname(__file__))
     sys.path.insert(0, path)
 
-from jsonschema2popo3.jsonschema2popo import main as _main  # noqa
+from jsonschema2popo3.cli import main as _main
 
 if __name__ == "__main__":
     sys.exit(_main())

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import argparse
 import json
 import os
 from pathlib import Path
@@ -8,12 +5,13 @@ from pathlib import Path
 import black
 import isort
 import networkx
+from black import Mode
 from jinja2 import Environment, FileSystemLoader
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class JsonSchema2Popo:
+class Generator:
     """Converts a JSON Schema to a Plain Old Python Object class"""
 
     CLASS_TEMPLATE_FNAME = "_class.jinja"
@@ -64,7 +62,7 @@ class JsonSchema2Popo:
                 g.add_edge(model["name"], dep)
 
         self.definitions = []
-        for model_name in networkx.topological_sort(g, reverse=True):
+        for model_name in list(reversed(list(networkx.topological_sort(g)))):
             if model_name in models_map:
                 self.definitions.append(models_map[model_name])
 
@@ -164,53 +162,6 @@ class JsonSchema2Popo:
         self.jinja.get_template(self.CLASS_TEMPLATE_FNAME).stream(
             models=self.definitions
         ).dump(filename)
-        black.format_file_in_place(Path(filename))
+        black.format_file_in_place(Path(filename), fast=False, mode=black.FileMode())
         isort.file(filename)
 
-class readable_dir(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        prospective_dir = values
-        if not os.path.isdir(prospective_dir):
-            raise argparse.ArgumentTypeError(
-                "readable_dir:{} is not a valid path".format(prospective_dir)
-            )
-        if os.access(prospective_dir, os.R_OK):
-            setattr(namespace, self.dest, prospective_dir)
-        else:
-            raise argparse.ArgumentTypeError(
-                "readable_dir:{} is not a readable dir".format(prospective_dir)
-            )
-
-
-def init_parser():
-    parser = argparse.ArgumentParser(
-        description="Converts JSON Schema to Plain Old Python Object"
-    )
-    parser.add_argument(
-        "json_schema_file",
-        type=argparse.FileType("r", encoding="utf-8"),
-        help="Path to JSON Schema file to load",
-    )
-    parser.add_argument(
-        "-o",
-        "--output-file",
-        type=argparse.FileType("w", encoding="utf-8"),
-        help="Path to file output",
-        default="model.py",
-    )
-    return parser
-
-
-def main():
-    parser = init_parser()
-    args = parser.parse_args()
-
-    loader = JsonSchema2Popo()
-    loader.load(args.json_schema_file)
-
-    outfile = args.output_file
-    loader.write_file(outfile)
-
-
-if __name__ == "__main__":
-    main()
