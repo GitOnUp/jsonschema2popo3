@@ -78,6 +78,32 @@ class Generator:
         if "type" in _obj:
             model["type"] = self.type_parser(_obj)
 
+        def get_python_type_hint(prop: dict):
+            # TODO #7 Add Optional here for not required types
+            hint = None
+            prop_type = prop["_type"]["type"]
+            prop_subtype = prop["_type"]["subtype"]
+            prop_format = prop["_format"]
+            if isinstance(prop_type, str):
+                # Name of a type
+                hint = prop_type
+            elif prop_type == list:
+                if isinstance(prop_subtype, str):
+                    hint = f"[{prop_subtype}]"
+                else:
+                    hint = f"[{prop_subtype.__name__}]"
+            elif prop_type == str:
+                if prop_format == "date-time":
+                    hint = "datetime"
+                else:
+                    hint = "str"
+            elif prop_type is None:
+                hint = "None"
+            else:
+                assert type(prop_type) == type
+                hint = prop_type.__name__
+            return hint
+
         model["properties"] = []
         if "properties" in _obj:
             for _prop_name, _prop in _obj["properties"].items():
@@ -109,6 +135,7 @@ class Generator:
                     "_enum": _enum,
                     "_format": _format,
                 }
+                prop["_type_hint"] = get_python_type_hint(prop)
                 model["properties"].append(prop)
         return model
 

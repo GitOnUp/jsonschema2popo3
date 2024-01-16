@@ -1,11 +1,19 @@
+from dataclasses import dataclass
+from datetime import datetime
+from typing import ClassVar
 import enum
 
 {% for model in models %}
+@dataclass
 class {{model.name}}:
-
 {% for prop in model.properties if prop._enum %}
-    _{{prop._name}}_enum = enum.Enum('_{{prop._name}}_enum', '{{prop._enum|join(' ')}}', module=__name__)
+    _{{prop._name}}_enum: ClassVar[enum.Enum] = enum.Enum('_{{prop._name}}_enum', '{{prop._enum|join(' ')}}', module=__name__)
 {% endfor %}
+
+{% for prop in model.properties %}
+    {{ prop._name }}: {{ prop._type_hint }}
+{% endfor %}
+
     _types_map = {
 {% for prop in model.properties %}
         '{{prop._name}}': {'type': {{prop._type.type.__name__ or prop._type.type or None}}, 'subtype': {{prop._type.subtype.__name__ or prop._type.subtype or None}}},
