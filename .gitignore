@@ -3,6 +3,6 @@
 dist/
 build/
 venv/
-test/tmp_output/
+test/jsonschema2popo3/unit_tests/output/
 
 .idea/

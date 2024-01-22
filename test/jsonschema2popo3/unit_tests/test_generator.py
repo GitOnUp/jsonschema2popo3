@@ -1,22 +1,17 @@
-import os
-import tempfile
 import unittest
-from pathlib import Path
 
+from jsonschema2popo3.unit_tests.common import TestCase
 from src.jsonschema2popo3.generator import Generator
 
-resource_dir = Path(os.path.dirname(__file__)) / "resource"
 
-
-class TestGeneration(unittest.TestCase):
+class TestGeneration(TestCase):
     def test_large_document(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            g = Generator()
-            with open(str(resource_dir / "ytapi_schema.json")) as schema_fp:
-                g.load(schema_fp)
-            file_path = Path(tmpdir) / "out.py"
-            g.write_file(str(file_path))
-            pass
+        g = Generator()
+        with open(self.resource_file("ytapi_schema.json")) as schema_fp:
+            g.load(schema_fp)
+        file_path = self.output_file_for_test("py")
+        g.write_file(str(file_path))
+        self.validate_python(file_path)
 
 
 if __name__ == '__main__':
