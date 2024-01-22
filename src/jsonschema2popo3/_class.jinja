@@ -31,8 +31,11 @@ class {{model.name}}:
 {% endif %}
     
 {% for prop in model.properties %}
-    def _get_{{prop._name}}(self):
+    @property
+    def {{prop._name}}(self):
         return self.__{{prop._name}}
+
+    @{{prop._name}}.setter
     def _set_{{prop._name}}(self, value):
 {% if prop._type and prop._type.type %}
         if not isinstance(value, {{prop._type.type.__name__ or prop._type.type}}):
@@ -50,8 +53,7 @@ class {{model.name}}:
 {% else %}
         self.__{{prop._name}} = value
 {% endif %}
-    {{prop._name}} = property(_get_{{prop._name}}, _set_{{prop._name}})
-    
+
 {% endfor %}
     def as_dict(self):
         d = dict()
